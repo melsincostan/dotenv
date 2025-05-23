@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/melsincostan/dotenv/helpers"
 )
@@ -45,10 +44,6 @@ func Parse(reader io.Reader) (res map[string]string, err error) {
 				rawLines = append(rawLines, multiline+lineBreak+pl)
 				inquotes = false
 			} else {
-				// check that the quote isn't in the key part of the string, which would be problematic
-				if strings.IndexRune(pl, quoteChar) < strings.IndexRune(pl, separator) {
-					return nil, ErrQuoteInKey
-				}
 				multiline = pl
 				inquotes = true
 			}
@@ -56,10 +51,6 @@ func Parse(reader io.Reader) (res map[string]string, err error) {
 			if inquotes {
 				return nil, ErrTooManyQuotes
 			} else {
-				// check that the quote isn't in the key part of the string, which would be problematic
-				if strings.IndexRune(pl, quoteChar) < strings.IndexRune(pl, separator) {
-					return nil, ErrQuoteInKey
-				}
 				rawLines = append(rawLines, pl)
 			}
 		}

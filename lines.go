@@ -24,6 +24,11 @@ func parseLine(line string) (key, value string, err error) {
 		return "", "", ErrContentOutsideQuotes
 	}
 
+	// check that the first quote isn't in the key part of the string, which would be problematic
+	if strings.IndexRune(cl, quoteChar) < strings.IndexRune(cl, separator) {
+		return "", "", ErrQuoteInKey
+	}
+
 	spl := strings.SplitN(cl, string(separator), 2)
 	if len(spl) < 2 {
 		return "", "", ErrMalformedLine
