@@ -6,6 +6,10 @@ import (
 	"github.com/melsincostan/dotenv/helpers"
 )
 
+// parseLine takes in a line from the Parse function (a multiline value would be a single entry)! and parses it to a key and value.
+// If there is an issue with the line, a corresponding error is returned and the key and value are left empty.
+// An [ErrEmptyLine] error is returned if the line is empty to distinguish from an empty key and value.
+// TODO: this should maybe also be an error in the future.
 func parseLine(line string) (key, value string, err error) {
 	cl := strings.TrimSpace(stripComments(line))
 
@@ -29,23 +33,28 @@ func parseLine(line string) (key, value string, err error) {
 		return "", "", ErrQuoteInKey
 	}
 
-	// check that there isn't content before the first quote of a line
-	if fqidx := strings.IndexRune(cl, quoteChar); fqidx != -1 && fqidx != strings.IndexRune(cl, separator)+1 {
-		return "", "", ErrContentOutsideQuotes
-	}
-
 	spl := strings.SplitN(cl, string(separator), 2)
 	if len(spl) < 2 {
 		return "", "", ErrMalformedLine
 	}
 
-	key = spl[0]
-	// remove quotes from the string.
-	// It was checked before that there should only be a valid amount, so doing it this way shouldn't result in trimming the beginning of a string.
-	noquotes := strings.TrimSuffix(strings.TrimPrefix(spl[1], string(quoteChar)), string(quoteChar))
-	if len(noquotes) < len(spl[1]) { // if this is a quoted string
-		noquotes = strings.ReplaceAll(noquotes, lineBreak, "\n") // replace all "line breaks" with actual line breaks
+	if strings.IndexRune(spl[1], quoteChar) != -1 {
+		// the string is quoted
+		key = strings.TrimSpace(spl[0])
+
+		nspval := strings.TrimSpace(spl[1])
+
+		if nspval[0] != quoteChar { // check that there is no content before the first quote
+			return "", "", ErrContentOutsideQuotes
+		}
+		// remove quotes from the string and replace "\n" by actual line breaks, since this is a multiline string.
+		// It was checked before that there should only be a valid amount, so doing it this way shouldn't result in trimming the beginning of a string.
+		value = strings.ReplaceAll(strings.TrimSuffix(strings.TrimPrefix(nspval, string(quoteChar)), string(quoteChar)), lineBreak, "\n")
+	} else {
+		// unquoted string
+		key = spl[0]
+		value = spl[1]
 	}
-	value = noquotes
+
 	return
 }
