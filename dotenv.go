@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/melsincostan/dotenv/helpers"
@@ -25,15 +24,6 @@ var (
 	ErrMalformedLine        = errors.New("line isn't in the key=value format and isn't a comment")
 	ErrQuoteInKey           = fmt.Errorf("key contains '%c'", quoteChar)
 )
-
-func ParseFile(name string) (res map[string]string, err error) {
-	file, err := os.Open(name)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	return Parse(file)
-}
 
 func Parse(reader io.Reader) (res map[string]string, err error) {
 	scanner := bufio.NewScanner(reader)
