@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -31,11 +32,12 @@ func ParseFile(name string) (res map[string]string, err error) {
 		return nil, err
 	}
 	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	return Parse(scanner)
+	return Parse(file)
 }
 
-func Parse(scanner *bufio.Scanner) (res map[string]string, err error) {
+func Parse(reader io.Reader) (res map[string]string, err error) {
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanLines) // explicitely set the function we want to use to split.
 	inquotes := false
 	multiline := ""
 	rawLines := []string{}
