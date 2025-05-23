@@ -1,5 +1,6 @@
 package dotenv
 
+// stripComments takes in a line (as returned by [Parse] - single entry for a multiline value), and removes any potential comments from it.
 func stripComments(line string) (cleaned string) {
 	cutoff := len(line)
 	idx := len(line)
