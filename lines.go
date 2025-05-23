@@ -25,7 +25,7 @@ func parseLine(line string) (key, value string, err error) {
 	}
 
 	// check that the first quote isn't in the key part of the string, which would be problematic
-	if strings.IndexRune(cl, quoteChar) < strings.IndexRune(cl, separator) {
+	if fqidx := strings.IndexRune(cl, quoteChar); fqidx != -1 && fqidx < strings.IndexRune(cl, separator) {
 		return "", "", ErrQuoteInKey
 	}
 
