@@ -10,6 +10,8 @@ import (
 // If there is an issue with the line, a corresponding error is returned and the key and value are left empty.
 // An [ErrEmptyLine] error is returned if the line is empty to distinguish from an empty key and value.
 // TODO: this should maybe also be an error in the future.
+// The parser is tolerant of spaces in keys and values.
+// It only recognizes double quotes (") as quotation characters.
 func parseLine(line string) (key, value string, err error) {
 	cl := strings.TrimSpace(stripComments(line))
 
