@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error opening the file: %s", err.Error())
 	}
+    defer file.close()
 
 	parsed, err := dotenv.Parse(file)
 	if err != nil {
