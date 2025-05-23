@@ -23,6 +23,7 @@ func TestParseLine(t *testing.T) {
 		{"key=\"value\nline2\"", "key", "value\nline2", nil},
 		{"key=\"value\\nline2\" # comment", "key", "value\nline2", nil},
 		{"key=\"value\nline2\" # comment", "key", "value\nline2", nil},
+		{"key=ab\"value\"", "", "", ErrContentOutsideQuotes},
 	}
 
 	for _, c := range cases {
