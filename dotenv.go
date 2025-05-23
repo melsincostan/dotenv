@@ -36,6 +36,7 @@ var (
 // No parsing is done on the values beyond setting "\n" to an actual newline in quoted values and removing quotes.
 // It returns no map and an error in case a line has an unexpected format.
 // It supportes unquoted values, quoted values, quoted multiline values by using "\n" on a single line, multiline values and comments, either on their own line or at the end of a line.
+// Double quotes shouldn't be used as part of keys or values, as this will return an error.
 func Parse(reader io.Reader) (res map[string]string, err error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines) // explicitely set the function we want to use to split.
