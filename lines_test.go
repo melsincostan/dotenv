@@ -12,7 +12,6 @@ func TestParseLine(t *testing.T) {
 		{"", "", "", ErrEmptyLine},
 		{"# fully a comment line", "", "", ErrEmptyLine}, // should already be covered by the tests in comments_test.go but one is never too sure.
 		{"line with to many \"\"quotes\"", "", "", ErrTooManyQuotes},
-		{"\"good\" bad", "", "", ErrContentOutsideQuotes},
 		{"k\"ey=value", "", "", ErrQuoteInKey},
 		{"bad", "", "", ErrMalformedLine},
 		{"key=value", "key", "value", nil},
@@ -24,6 +23,7 @@ func TestParseLine(t *testing.T) {
 		{"key=\"value\\nline2\" # comment", "key", "value\nline2", nil},
 		{"key=\"value\nline2\" # comment", "key", "value\nline2", nil},
 		{"key=ab\"value\"", "", "", ErrContentOutsideQuotes},
+		{"key=\"good\" bad", "", "", ErrContentOutsideQuotes},
 		{"key = \"value\"", "key", "value", nil},
 		{"key = value", "key ", " value", nil},
 	}

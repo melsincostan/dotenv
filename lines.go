@@ -24,10 +24,6 @@ func parseLine(line string) (key, value string, err error) {
 		return "", "", ErrTooManyQuotes
 	}
 
-	if lqidx := helpers.RuneIndexN(cl, quoteChar, 2); lqidx != -1 && lqidx < (len(cl)-1) { // check for stray, non comment content after the last quote
-		return "", "", ErrContentOutsideQuotes
-	}
-
 	// check that the first quote isn't in the key part of the string, which would be problematic
 	if fqidx := strings.IndexRune(cl, quoteChar); fqidx != -1 && fqidx < strings.IndexRune(cl, separator) {
 		return "", "", ErrQuoteInKey
@@ -44,7 +40,7 @@ func parseLine(line string) (key, value string, err error) {
 
 		nspval := strings.TrimSpace(spl[1])
 
-		if nspval[0] != quoteChar { // check that there is no content before the first quote
+		if nspval[0] != quoteChar || nspval[len(nspval)-1] != quoteChar { // check that there is no content before the first quote
 			return "", "", ErrContentOutsideQuotes
 		}
 		// remove quotes from the string and replace "\n" by actual line breaks, since this is a multiline string.
