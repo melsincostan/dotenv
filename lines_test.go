@@ -26,6 +26,7 @@ func TestParseLine(t *testing.T) {
 		{"key=\"good\" bad", "", "", ErrContentOutsideQuotes},
 		{"key = \"value\"", "key", "value", nil},
 		{"key = value", "key ", " value", nil},
+		{"key=\"multi\nline=withequals\"", "key", "multi\nline=withequals", nil},
 	}
 
 	for _, c := range cases {
